@@ -1,9 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import Image from 'next/image';
 import {
   Bell,
   Building2,
@@ -12,15 +9,12 @@ import {
   Search,
   Settings,
 } from 'lucide-react';
-
+import { AppShellNav } from '@/components/app-shell-nav';
 import {
   SidebarProvider,
   Sidebar,
   SidebarHeader,
   SidebarContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
   SidebarTrigger,
   SidebarInset,
 } from '@/components/ui/sidebar';
@@ -37,7 +31,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
-const navItems = [
+export const navItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/companies', label: 'Companies', icon: Building2 },
   { href: '/kanban', label: 'Workflow', icon: KanbanSquare },
@@ -53,8 +47,6 @@ export function AppShell({
   children: React.ReactNode;
   pageTitle: string;
 }) {
-  const pathname = usePathname();
-
   return (
     <SidebarProvider>
       <Sidebar>
@@ -65,21 +57,7 @@ export function AppShell({
           </div>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarMenu>
-            {navItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <Link href={item.href} passHref>
-                  <SidebarMenuButton
-                    isActive={pathname === item.href}
-                    tooltip={item.label}
-                  >
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </SidebarMenuButton>
-                </Link>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
+          <AppShellNav />
         </SidebarContent>
       </Sidebar>
       <SidebarInset>
