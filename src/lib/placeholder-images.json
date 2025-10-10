@@ -1,3 +1,52 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "venture-scout-logo",
+      "description": "Venture Scout App Logo",
+      "imageUrl": "https://picsum.photos/seed/logo/100/100",
+      "imageHint": "abstract logo"
+    },
+    {
+      "id": "user-avatar",
+      "description": "User avatar placeholder",
+      "imageUrl": "https://picsum.photos/seed/avatar/40/40",
+      "imageHint": "person avatar"
+    },
+    {
+      "id": "company-logo-1",
+      "description": "Placeholder for company logo 1",
+      "imageUrl": "https://picsum.photos/seed/c1/40/40",
+      "imageHint": "tech logo"
+    },
+    {
+      "id": "company-logo-2",
+      "description": "Placeholder for company logo 2",
+      "imageUrl": "https://picsum.photos/seed/c2/40/40",
+      "imageHint": "finance logo"
+    },
+    {
+      "id": "company-logo-3",
+      "description": "Placeholder for company logo 3",
+      "imageUrl": "https://picsum.photos/seed/c3/40/40",
+      "imageHint": "health logo"
+    },
+    {
+      "id": "company-logo-4",
+      "description": "Placeholder for company logo 4",
+      "imageUrl": "https://picsum.photos/seed/c4/40/40",
+      "imageHint": "retail logo"
+    },
+    {
+      "id": "company-logo-5",
+      "description": "Placeholder for company logo 5",
+      "imageUrl": "https://picsum.photos/seed/c5/40/40",
+      "imageHint": "energy logo"
+    },
+    {
+      "id": "company-logo-6",
+      "description": "Placeholder for company logo 6",
+      "imageUrl": "https://picsum.photos/seed/c6/40/40",
+      "imageHint": "media logo"
+    }
+  ]
 }
