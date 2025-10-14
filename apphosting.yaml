@@ -1,10 +1,15 @@
 # Settings to manage and configure a Firebase App Hosting backend.
 # https://firebase.google.com/docs/app-hosting/configure
 
+# Settings for Cloud Run
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
-  maxInstances: 1
+  # cpu: 1 # Number of CPUs to use (e.g., 1, 2)
+  # memoryMiB: 512 # Amount of memory in MiB (e.g., 512, 1024)
+  # concurrency: 80 # Max requests per instance
+  # minInstances: 0 # Minimum number of instances to keep running
+  maxInstances: 10 # Maximum number of instances to scale to
+
+# Build command for Next.js
 build:
   - command: 'npm install'
   - command: 'npm run build'
