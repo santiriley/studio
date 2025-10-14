@@ -13,3 +13,22 @@ runConfig:
 build:
   - command: 'npm install'
   - command: 'npm run build'
+
+# Environment variables and secrets
+env:
+  # Example of a public environment variable for Next.js
+  - variable: NEXT_PUBLIC_API_URL
+    value: "https://api.example.com"
+    availability:
+      - BUILD
+      - RUNTIME
+  
+  # Example of a runtime environment variable
+  - variable: LOG_LEVEL
+    value: "info"
+    availability:
+      - RUNTIME
+
+  # Example of referencing a secret from Cloud Secret Manager
+  # - variable: API_KEY
+  #   secret: MY_API_KEY_SECRET
