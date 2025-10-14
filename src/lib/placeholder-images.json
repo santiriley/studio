@@ -3,50 +3,50 @@
     {
       "id": "venture-scout-logo",
       "description": "Venture Scout App Logo",
-      "imageUrl": "https://picsum.photos/seed/logo/100/100",
+      "imageUrl": "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=100&h=100&fit=crop&q=80",
       "imageHint": "abstract logo"
     },
     {
       "id": "user-avatar",
       "description": "User avatar placeholder",
-      "imageUrl": "https://picsum.photos/seed/avatar/40/40",
+      "imageUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&q=80",
       "imageHint": "person avatar"
     },
     {
       "id": "company-logo-1",
       "description": "Placeholder for company logo 1",
-      "imageUrl": "https://picsum.photos/seed/c1/40/40",
-      "imageHint": "tech logo"
+      "imageUrl": "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=40&h=40&fit=crop&q=80",
+      "imageHint": "tech company"
     },
     {
       "id": "company-logo-2",
       "description": "Placeholder for company logo 2",
-      "imageUrl": "https://picsum.photos/seed/c2/40/40",
-      "imageHint": "finance logo"
+      "imageUrl": "https://images.unsplash.com/photo-1600880292203-942bb68b6be3?w=40&h=40&fit=crop&q=80",
+      "imageHint": "finance business"
     },
     {
       "id": "company-logo-3",
       "description": "Placeholder for company logo 3",
-      "imageUrl": "https://picsum.photos/seed/c3/40/40",
-      "imageHint": "health logo"
+      "imageUrl": "https://images.unsplash.com/photo-1579684385127-6c17931c3b6b?w=40&h=40&fit=crop&q=80",
+      "imageHint": "health clinic"
     },
     {
       "id": "company-logo-4",
       "description": "Placeholder for company logo 4",
-      "imageUrl": "https://picsum.photos/seed/c4/40/40",
-      "imageHint": "retail logo"
+      "imageUrl": "https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?w=40&h=40&fit=crop&q=80",
+      "imageHint": "education online"
     },
     {
       "id": "company-logo-5",
       "description": "Placeholder for company logo 5",
-      "imageUrl": "https://picsum.photos/seed/c5/40/40",
-      "imageHint": "energy logo"
+      "imageUrl": "https://images.unsplash.com/photo-1518458028785-8fbcd101ebb9?w=40&h=40&fit=crop&q=80",
+      "imageHint": "retail store"
     },
     {
       "id": "company-logo-6",
       "description": "Placeholder for company logo 6",
-      "imageUrl": "https://picsum.photos/seed/c6/40/40",
-      "imageHint": "media logo"
+      "imageUrl": "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=40&h=40&fit=crop&q=80",
+      "imageHint": "media entertainment"
     }
   ]
 }
