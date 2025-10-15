@@ -1,27 +1,16 @@
-# Specifies the Next.js framework adapter. This is required for App Hosting.
-requires:
-  - nextjs
-
-# Settings for Cloud Run
+# apphosting.yaml — Next.js via framework adapter (no custom build steps)
 runConfig:
   cpu: 1
   memoryMiB: 1024
   concurrency: 80
-  # minInstances: 0 # Minimum number of instances to keep running
-  maxInstances: 10 # Maximum number of instances to scale to
 
-# Environment variables and secrets
 env:
   - variable: NODE_ENV
     value: production
-    availability:
-      - BUILD
-      - RUNTIME
+    availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_APP_NAME
     value: Venture Scout
-    availability:
-      - BUILD
-      - RUNTIME
+    availability: [BUILD, RUNTIME]
 
 # Let the adapter infer the build; only define the start if needed.
 scripts:
