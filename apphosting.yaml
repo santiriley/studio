@@ -1,36 +1,28 @@
-# Settings to manage and configure a Firebase App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure
-
 # Specifies the Next.js framework adapter. This is required for App Hosting.
 requires:
   - nextjs
 
 # Settings for Cloud Run
 runConfig:
-  # cpu: 1 # Number of CPUs to use (e.g., 1, 2)
-  # memoryMiB: 512 # Amount of memory in MiB (e.g., 512, 1024)
-  # concurrency: 80 # Max requests per instance
+  cpu: 1
+  memoryMiB: 1024
+  concurrency: 80
   # minInstances: 0 # Minimum number of instances to keep running
   maxInstances: 10 # Maximum number of instances to scale to
 
-# Defines the command to start the Next.js application.
-startCommand: npm run start
-
 # Environment variables and secrets
 env:
-  # Example of a public environment variable for Next.js
-  - variable: NEXT_PUBLIC_API_URL
-    value: "https://api.example.com"
+  - variable: NODE_ENV
+    value: production
     availability:
       - BUILD
       - RUNTIME
-  
-  # Example of a runtime environment variable
-  - variable: LOG_LEVEL
-    value: "info"
+  - variable: NEXT_PUBLIC_APP_NAME
+    value: Venture Scout
     availability:
+      - BUILD
       - RUNTIME
 
-  # Example of referencing a secret from Cloud Secret Manager
-  # - variable: API_KEY
-  #   secret: MY_API_KEY_SECRET
+# Let the adapter infer the build; only define the start if needed.
+scripts:
+  runCommand: "npm run start"
