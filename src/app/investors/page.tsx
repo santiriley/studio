@@ -1,0 +1,32 @@
+
+import AppShell from '@/components/app-shell';
+import { mockInvestors } from '@/lib/mock';
+export const dynamic = 'force-dynamic';
+
+export default function InvestorsPage() {
+  return (
+    <AppShell>
+      <h1 style={{ fontSize: 22, margin: '8px 0 16px' }}>Investors</h1>
+      <div style={{ display: 'grid', gap: 12 }}>
+        {mockInvestors.map((inv) => (
+          <a
+            key={inv.id}
+            href={`/investors/${inv.id}`}
+            style={{
+              display: 'block',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: 12,
+              padding: 16,
+              background: 'rgba(255,255,255,0.03)',
+              color: '#e6eefc',
+              textDecoration: 'none',
+            }}
+          >
+            <strong>{inv.name}</strong>
+            <div style={{ opacity: 0.75, fontSize: 13 }}>{inv.thesis.name}</div>
+          </a>
+        ))}
+      </div>
+    </AppShell>
+  );
+}
