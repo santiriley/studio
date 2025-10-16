@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-export default function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ maxWidth: 1080, margin: "0 auto", padding: 24 }}>
       <header style={{ marginBottom: 24 }}>
@@ -11,3 +11,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+
+// also provide default so either `import AppShell` or `import { AppShell }` works
+export default AppShell;
