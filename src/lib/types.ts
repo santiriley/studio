@@ -1,35 +1,26 @@
-export type Company = {
+export type NewsItem = { id: string; title: string; source: string; url: string };
+export type NewsCluster = { id: string; topic: string; items: NewsItem[] };
+
+export type Thesis = {
   id: string;
   name: string;
-  domain: string;
-  score: number;
-  description: string;
-  stage: KanbanStage;
-  logoUrl: string;
-  metadata: {
-    recency: number;
-    momentum: number;
-    team: number;
-    idea: number;
-  };
+  geos?: string[];
+  sectors?: string[];
+  stages?: string[];
+  checkSize?: { min?: number; max?: number; currency?: string };
+  exclusions?: string[];
+  exceptions?: string[];
+  weights?: Partial<Record<'geo' | 'sector' | 'stage' | 'check', number>>;
 };
 
-export type NewsArticle = {
+export type Investor = { id: string; name: string; thesis: Thesis; logoUrl?: string };
+
+export type StartupProfile = {
   id: string;
-  title: string;
-  excerpt: string;
-  url: string;
-  source: string;
-  publishedAt: string;
+  name: string;
+  country?: string;
+  sector?: string;
+  stage?: string;
+  desiredCheckSize?: number;
+  links?: { website?: string; deckUrl?: string };
 };
-
-export type Cluster = {
-  id: string;
-  canonicalArticle: NewsArticle;
-  articles: NewsArticle[];
-  summary: string | null;
-};
-
-export type KanbanStage = 'New' | 'Review' | 'Contacted' | 'Rejected' | 'Funded';
-
-export const KANBAN_STAGES: KanbanStage[] = ['New', 'Review', 'Contacted', 'Funded', 'Rejected'];
