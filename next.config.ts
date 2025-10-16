@@ -1,7 +1,8 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -35,6 +36,11 @@ const nextConfig: NextConfig = {
         pathname: '/s2/favicons/**',
       },
     ],
+  },
+  webpack(config) {
+    // Allow imports like "@/components/..."
+    config.resolve.alias["@" ] = path.resolve(__dirname, "src");
+    return config;
   },
 };
 
