@@ -1,16 +1,15 @@
-"use client";
-import React from "react";
-
-export function AppShell({ children }: { children: React.ReactNode }) {
+import * as React from 'react';
+type Props = { children: React.ReactNode };
+export default function AppShell({ children }: Props) {
   return (
-    <div style={{ maxWidth: 1080, margin: "0 auto", padding: 24 }}>
-      <header style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 20, fontWeight: 600 }}>Venture Scout</h1>
+    <div style={{ minHeight: '100svh', background: '#0b1220', color: '#e6eefc' }}>
+      <header style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        <strong>Venture Scout</strong>
       </header>
-      <main>{children}</main>
+      <main style={{ padding: 16, maxWidth: 960, margin: '0 auto' }}>{children}</main>
+      <footer style={{ padding: 16, opacity: 0.7 }}>
+        <small>© {new Date().getFullYear()} Venture Scout</small>
+      </footer>
     </div>
   );
 }
-
-// also provide default so either `import AppShell` or `import { AppShell }` works
-export default AppShell;
