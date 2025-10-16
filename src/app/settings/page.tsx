@@ -2,6 +2,8 @@ import { AppShell } from '@/components/app-shell';
 import { DigestSettings } from '@/components/settings/digest-settings';
 import { WebhookSettings } from '@/components/settings/webhook-settings';
 
+export const dynamic = 'force-dynamic';
+
 export default function SettingsPage() {
   return (
     <AppShell pageTitle="Settings">
