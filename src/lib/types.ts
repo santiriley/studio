@@ -65,3 +65,19 @@ export type Cluster = {
   articles: Article[];
   summary?: string;
 };
+
+// --- Matching model ---
+export type MatchReasonCode = 'sector' | 'stage' | 'geo' | 'ticket';
+export type MatchVerdict = 'match' | 'warning' | 'miss';
+export type MatchReason = {
+  code: MatchReasonCode;
+  verdict: MatchVerdict; // 'match' ✓, 'warning' !, 'miss' ✗
+  label: string;         // human-readable explanation
+};
+
+export type MatchResult = {
+  investor: Investor;
+  score: number; // 0–100
+  reasons: MatchReason[];
+  contactCTA: string;
+};
