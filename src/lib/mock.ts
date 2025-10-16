@@ -1,5 +1,5 @@
 // Mock data for dashboard only. TODO: replace with Firestore/Functions.
-import { NewsCluster } from './types';
+import { NewsCluster, Investor, Thesis, OpenCall } from './types';
 export const mockNews: NewsCluster[] = [
   {
     id: 'c1',
@@ -18,7 +18,6 @@ export const mockNews: NewsCluster[] = [
 
 // --- Mock theses & investors for Founder Mode v1 ---
 // Seeds are EDITABLE later in Firestore; these are safe stubs for demo.
-import { Investor, Thesis } from '@/lib/types';
 
 const ATTAMCF1_THESIS: Thesis = {
   id: 'th-atta-mcf1',
@@ -87,5 +86,32 @@ export const mockInvestors: Investor[] = [
     id: 'inv-mock-8',
     name: 'Central Seed Co.',
     thesis: { id: 'th-m8', name: 'Central Seed', geos: ['Central America'], sectors: ['SaaS', 'Fintech'], stages: ['Pre-Seed', 'Seed'], checkSize: { min: 75_000, max: 300_000, currency: 'USD' } },
+  },
+];
+
+export const mockOpenCalls: OpenCall[] = [
+  {
+    id: 'oc-1',
+    org: 'Venture Scout',
+    title: 'LatAm Climate Seed — Office Hours',
+    description: 'Weekly 1:1s for founders in climate, ag-waste, and circular economy.',
+    applyUrl: '#',
+    deadline: undefined,
+  },
+  {
+    id: 'oc-2',
+    org: 'Impact Angels CR',
+    title: 'Costa Rica Angel Office Hours',
+    description: 'Pitch feedback and warm intro exploration with local angels.',
+    applyUrl: '#',
+    deadline: '2025-12-31',
+  },
+  {
+    id: 'oc-3',
+    org: 'Carao Ventures',
+    title: 'Carao Open Calls — Smaller Markets',
+    description: 'Pre-Seed/Seed in smaller LATAM markets; US geo exception case-by-case.',
+    applyUrl: '#',
+    deadline: '2025-11-30',
   },
 ];

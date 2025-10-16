@@ -35,6 +35,12 @@ export default function DashboardPage() {
             <a href="/founder/onboarding" style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', textDecoration: 'none', color: '#e6eefc' }}>
               Founder onboarding
             </a>
+            <a
+              href="/programs"
+              style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', textDecoration: 'none', color: '#e6eefc' }}
+            >
+              Programs / Open calls
+            </a>
             <button onClick={handleAISummary} type="button" style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', background: 'transparent', color: '#e6eefc' }}>
               Generate AI Summary (noop)
             </button>

@@ -81,3 +81,14 @@ export type MatchResult = {
   reasons: MatchReason[];
   contactCTA: string;
 };
+
+// --- Programs / Open Calls ---
+export type Program = {
+  id: string;
+  org: string;
+  title: string;
+  description?: string;
+  applyUrl: string;
+  deadline?: string; // ISO date
+};
+export type OpenCall = Program;
