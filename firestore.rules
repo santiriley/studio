@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  // TEMPLATE ONLY — non-enforcing in App Hosting for now.
+  // TODO: Lock down per workspace with custom claims once Auth is wired.
+  match /databases/{database}/documents {
+    match /workspaces/{workspaceId} {
+      allow read: if true;  // TODO tighten
+      allow write: if false;
+    }
+    match /theses/{thesisId} {
+      allow read: if true;  // TODO tighten
+      allow write: if false;
+    }
+    match /workspaceCompanies/{companyId} {
+      allow read: if true;  // TODO tighten
+      allow write: if false;
+    }
+    match /workspaceFits/{fitId} {
+      allow read: if true;  // TODO tighten
+      allow write: if false;
+    }
+  }
+}

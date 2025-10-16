@@ -1,0 +1,8 @@
+{
+  "indexes": [
+    // TEMPLATE ONLY — add composite indexes here when needed, e.g.:
+    // { "collectionGroup": "workspaceFits", "queryScope": "COLLECTION", "fields": [{"fieldPath":"workspaceId","order":"ASCENDING"},{"fieldPath":"score","order":"DESCENDING"}] }
+  ],
+  "fieldOverrides": [
+  ]
+}
