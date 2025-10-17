@@ -27,6 +27,7 @@ export default function InvestorsPage() {
           >
             <strong>{inv.name}</strong>
             <div style={{ opacity: 0.75, fontSize: 13 }}>{inv.thesis.name}</div>
+            {inv.workspaceId && <div style={{ marginTop: 4, fontSize: 12, opacity: 0.8 }}>Workspace: <code>{inv.workspaceId}</code></div>}
           </a>
         ))}
       </div>
