@@ -56,6 +56,9 @@ export default function DashboardPage() {
             >
               Programs / Open calls
             </a>
+            <a href="/debug/firebase" style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', textDecoration: 'none', color: '#e6eefc' }}>
+              Debug Firebase
+            </a>
             <button onClick={handleAISummary} type="button" style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', background: 'transparent', color: '#e6eefc' }}>
               Generate AI Summary (noop)
             </button>
