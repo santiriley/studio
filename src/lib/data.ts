@@ -4,6 +4,10 @@ import { getDb } from '@/lib/firebase';
 import { mockInvestors } from '@/lib/mock';
 import type { Company as CompanyType, Investor, KanbanStage, Thesis } from '@/lib/types';
 
+// Last data source used by fetchInvestorsForWorkspace (for UI hints).
+let _investorsLastSource: 'firestore' | 'mock' = 'mock';
+export function getInvestorsLastSource() { return _investorsLastSource; }
+
 type InvestorDoc = {
   id: string;
   name: string;
@@ -33,11 +37,13 @@ async function hydrateInvestorWithThesis(
 export async function fetchInvestorsForWorkspace(workspaceId?: string | null): Promise<Investor[]> {
   try {
     if (!isFirebaseConfigured()) {
+      _investorsLastSource = 'mock';
       // Fallback to mocks filtered by workspace tag (if any)
       return mockInvestors.filter(i => !workspaceId || !i.workspaceId || i.workspaceId === workspaceId);
     }
     const db = await getDb();
     if (!db) {
+      _investorsLastSource = 'mock';
       return mockInvestors.filter(i => !workspaceId || !i.workspaceId || i.workspaceId === workspaceId);
     }
     const { collection, getDocs, query, where } = await import('firebase/firestore');
@@ -50,11 +56,14 @@ export async function fetchInvestorsForWorkspace(workspaceId?: string | null): P
       docs.push({ id: d.id, name: data.name, logoUrl: data.logoUrl, workspaceId: data.workspaceId, thesisDocId: data.thesisDocId });
     });
     if (!docs.length) {
+      _investorsLastSource = 'mock';
       return mockInvestors.filter(i => !workspaceId || !i.workspaceId || i.workspaceId === workspaceId);
     }
     const out = await Promise.all(docs.map((d) => hydrateInvestorWithThesis(db, d)));
+    _investorsLastSource = 'firestore';
     return out;
   } catch {
+    _investorsLastSource = 'mock';
     return mockInvestors.filter(i => !workspaceId || !i.workspaceId || i.workspaceId === workspaceId);
   }
 }

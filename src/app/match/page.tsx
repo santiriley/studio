@@ -3,7 +3,7 @@ import AppShell from '@/components/app-shell';
 import { rankInvestors } from '@/lib/match';
 import { MatchResult, StartupProfile, MatchReason } from '@/lib/types';
 import { useWorkspace } from '@/context/workspace';
-import { fetchInvestorsForWorkspace } from '@/lib/data';
+import { fetchInvestorsForWorkspace, getInvestorsLastSource } from '@/lib/data';
 import * as React from 'react';
 
 export const dynamic = 'force-dynamic';
@@ -59,12 +59,16 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
   const { current } = useWorkspace();
   const startup = fromSearchParams(searchParams ?? {});
   const [results, setResults] = React.useState<MatchResult[]>([]);
+  const [source, setSource] = React.useState<'firestore' | 'mock'>('mock');
   React.useEffect(() => {
     let alive = true;
     (async () => {
       const investors = await fetchInvestorsForWorkspace(current?.id);
       const ranked = rankInvestors(startup, investors);
-      if (alive) setResults(ranked);
+      if (alive) {
+        setResults(ranked);
+        setSource(getInvestorsLastSource());
+      }
     })();
     return () => { alive = false; };
   }, [current?.id, startup.country, startup.sector, startup.stage, startup.desiredCheckSize]);
@@ -78,6 +82,7 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
           <div><strong>Country:</strong> {startup.country ?? '—'} · <strong>Sector:</strong> {startup.sector ?? '—'} · <strong>Stage:</strong> {startup.stage ?? '—'} · <strong>Ticket:</strong> {startup.desiredCheckSize ?? '—'}</div>
         </div>
       </section>
+      <div style={{ fontSize: 12, opacity: 0.7, margin: '4px 0 12px' }}>Data source: <code>{source}</code></div>
       <div style={{ display: 'grid', gap: 12 }}>
         {results.map((r) => (
           <div key={r.investor.id} style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)' }}>

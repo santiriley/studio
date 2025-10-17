@@ -1,7 +1,7 @@
 'use client';
 import AppShell from '@/components/app-shell';
 import { useWorkspace } from '@/context/workspace';
-import { fetchInvestorsForWorkspace } from '@/lib/data';
+import { fetchInvestorsForWorkspace, getInvestorsLastSource } from '@/lib/data';
 import * as React from 'react';
 export const dynamic = 'force-dynamic';
 
@@ -9,6 +9,7 @@ export default function InvestorsPage() {
   const { current } = useWorkspace();
   const [list, setList] = React.useState(() => [] as Awaited<ReturnType<typeof fetchInvestorsForWorkspace>>);
   const [loading, setLoading] = React.useState(true);
+  const [source, setSource] = React.useState<'firestore' | 'mock'>('mock');
   React.useEffect(() => {
     let alive = true;
     (async () => {
@@ -17,6 +18,7 @@ export default function InvestorsPage() {
       if (alive) {
         setList(data);
         setLoading(false);
+        setSource(getInvestorsLastSource());
       }
     })();
     return () => { alive = false; };
@@ -24,6 +26,7 @@ export default function InvestorsPage() {
   return (
     <AppShell>
       <h1 style={{ fontSize: 22, margin: '8px 0 16px' }}>Investors</h1>
+      <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 8 }}>Data source: <code>{source}</code></div>
       <div style={{ display: 'grid', gap: 12 }}>
         {loading && <div style={{ opacity: 0.8 }}>Loading…</div>}
         {list.map((inv) => (
