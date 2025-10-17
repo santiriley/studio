@@ -1,7 +1,7 @@
 import AppShell from '@/components/app-shell';
 import { rankInvestors } from '@/lib/match';
 import { mockInvestors } from '@/lib/mock';
-import { MatchResult, StartupProfile } from '@/lib/types';
+import { MatchResult, StartupProfile, MatchReason } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +24,15 @@ function fromSearchParams(searchParams: SP): StartupProfile {
   };
 }
 
-function Chip({ verdict, text }: { verdict: 'match' | 'warning' | 'miss'; text: string }) {
+function tooltip(reason: MatchReason): string | undefined {
+  if (!reason.meta) return undefined;
+  const { thesisField, thesisValue, startupField, startupValue } = reason.meta;
+  const tv = Array.isArray(thesisValue) ? thesisValue.join(', ') : typeof thesisValue === 'object' ? JSON.stringify(thesisValue) : String(thesisValue ?? '—');
+  const sv = String(startupValue ?? '—');
+  return `Thesis ${thesisField}: ${tv} • Startup ${startupField}: ${sv}`;
+}
+
+function Chip({ verdict, text, title }: { verdict: 'match' | 'warning' | 'miss'; text: string; title?: string }) {
   const bg =
     verdict === 'match'
       ? 'rgba(52,211,153,0.15)'
@@ -38,7 +46,7 @@ function Chip({ verdict, text }: { verdict: 'match' | 'warning' | 'miss'; text: 
       ? '1px solid rgba(251,191,36,0.4)'
       : '1px solid rgba(239,68,68,0.4)';
   return (
-    <span style={{ padding: '4px 8px', borderRadius: 999, border, background: bg, fontSize: 12 }}>
+    <span title={title} style={{ padding: '4px 8px', borderRadius: 999, border, background: bg, fontSize: 12 }}>
       {verdict === 'match' ? '✓ ' : verdict === 'warning' ? '! ' : '✗ '} {text}
     </span>
   );
@@ -72,9 +80,20 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
             </div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
               {r.reasons.map((reason, i) => (
-                <Chip key={i} verdict={reason.verdict} text={reason.label} />
+                <Chip key={i} verdict={reason.verdict} text={reason.label} title={tooltip(reason)} />
               ))}
             </div>
+            <details style={{ marginTop: 10 }}>
+              <summary style={{ cursor: 'pointer', opacity: 0.85 }}>Thesis snapshot</summary>
+              <div style={{ marginTop: 8, fontSize: 13, opacity: 0.9, lineHeight: 1.6 }}>
+                <div><strong>Geos:</strong> {r.investor.thesis.geos?.join(', ') ?? '—'}</div>
+                <div><strong>Sectors:</strong> {r.investor.thesis.sectors?.join(', ') ?? '—'}</div>
+                <div><strong>Stages:</strong> {r.investor.thesis.stages?.join(', ') ?? '—'}</div>
+                <div><strong>Check size:</strong> {r.investor.thesis.checkSize?.min ?? '—'}–{r.investor.thesis.checkSize?.max ?? '—'} {r.investor.thesis.checkSize?.currency ?? ''}</div>
+                {r.investor.thesis.exceptions?.length ? <div><strong>Exceptions:</strong> {r.investor.thesis.exceptions.join(', ')}</div> : null}
+                {r.investor.thesis.exclusions?.length ? <div><strong>Exclusions:</strong> {r.investor.thesis.exclusions.join(', ')}</div> : null}
+              </div>
+            </details>
             <div style={{ marginTop: 10 }}>
               <a
                 href="#"
