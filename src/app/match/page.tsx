@@ -4,6 +4,7 @@ import { rankInvestors } from '@/lib/match';
 import { MatchResult, StartupProfile, MatchReason } from '@/lib/types';
 import { useWorkspace } from '@/context/workspace';
 import { fetchInvestorsForWorkspace, getInvestorsLastSource } from '@/lib/data';
+import { mockInvestors } from '@/lib/mock';
 import * as React from 'react';
 
 export const dynamic = 'force-dynamic';
@@ -60,14 +61,28 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
   const startup = fromSearchParams(searchParams ?? {});
   const [results, setResults] = React.useState<MatchResult[]>([]);
   const [source, setSource] = React.useState<'firestore' | 'mock'>('mock');
+  const [loading, setLoading] = React.useState(true);
   React.useEffect(() => {
     let alive = true;
     (async () => {
-      const investors = await fetchInvestorsForWorkspace(current?.id);
-      const ranked = rankInvestors(startup, investors);
-      if (alive) {
-        setResults(ranked);
-        setSource(getInvestorsLastSource());
+      setLoading(true);
+      try {
+        const investors = await fetchInvestorsForWorkspace(current?.id);
+        const ranked = rankInvestors(startup, investors);
+        if (alive) {
+          setResults(ranked);
+          setSource(getInvestorsLastSource());
+        }
+      } catch {
+        // hard fallback to mocks
+        const fallback = mockInvestors.filter(i => !current?.id || !i.workspaceId || i.workspaceId === current.id);
+        const ranked = rankInvestors(startup, fallback);
+        if (alive) {
+          setResults(ranked);
+          setSource('mock');
+        }
+      } finally {
+        if (alive) setLoading(false);
       }
     })();
     return () => { alive = false; };
@@ -83,6 +98,7 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
         </div>
       </section>
       <div style={{ fontSize: 12, opacity: 0.7, margin: '4px 0 12px' }}>Data source: <code>{source}</code></div>
+      {loading && <div style={{ opacity: 0.8, marginBottom: 12 }}>Loading…</div>}
       <div style={{ display: 'grid', gap: 12 }}>
         {results.map((r) => (
           <div key={r.investor.id} style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)' }}>
