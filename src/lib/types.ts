@@ -13,7 +13,7 @@ export type Thesis = {
   weights?: Partial<Record<'geo' | 'sector' | 'stage' | 'check', number>>;
 };
 
-export type Investor = { id: string; name: string; thesis: Thesis; logoUrl?: string };
+export type Investor = { id: string; name: string; thesis: Thesis; logoUrl?: string; workspaceId?: string };
 
 export type StartupProfile = {
   id: string;

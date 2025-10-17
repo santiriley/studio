@@ -44,8 +44,8 @@ const CARAO_THESIS: Thesis = {
 };
 
 export const mockInvestors: Investor[] = [
-  { id: 'inv-atta', name: 'Atta Impact Capital (MCF1)', thesis: ATTAMCF1_THESIS, logoUrl: '' },
-  { id: 'inv-carao', name: 'Carao Ventures', thesis: CARAO_THESIS, logoUrl: '' },
+  { id: 'inv-atta', name: 'Atta Impact Capital (MCF1)', thesis: ATTAMCF1_THESIS, logoUrl: '', workspaceId: 'ws-atta' },
+  { id: 'inv-carao', name: 'Carao Ventures', thesis: CARAO_THESIS, logoUrl: '', workspaceId: 'ws-carao' },
   // Simple generics to reach 10 options
   {
     id: 'inv-mock-1',
