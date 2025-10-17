@@ -5,7 +5,7 @@ import { getDb } from '@/lib/firebase';
 import { isFirebaseConfigured } from '@/lib/env';
 
 type Props = {
-  investorId: string;
+  thesisDocId: string;
   seed: Thesis;
 };
 
@@ -17,7 +17,7 @@ function fromCSV(s: string) {
   return s.split(',').map((t) => t.trim()).filter(Boolean);
 }
 
-export default function Editor({ investorId, seed }: Props) {
+export default function Editor({ thesisDocId, seed }: Props) {
   const [thesis, setThesis] = React.useState<Thesis>(seed);
   const [savedAt, setSavedAt] = React.useState<number | null>(null);
   const [cloudStatus, setCloudStatus] = React.useState<string>(''); // UI hint
@@ -25,14 +25,14 @@ export default function Editor({ investorId, seed }: Props) {
   // Load from localStorage if present
   React.useEffect(() => {
     try {
-      const raw = localStorage.getItem(k(investorId));
+      const raw = localStorage.getItem(k(thesisDocId));
       if (raw) {
         const parsed = JSON.parse(raw) as Thesis;
         setThesis(parsed);
         setSavedAt(parsed ? Date.now() : null);
       }
     } catch {}
-  }, [investorId]);
+  }, [thesisDocId]);
 
   // Try to load from Firestore if configured (read-only safe)
   React.useEffect(() => {
@@ -42,7 +42,7 @@ export default function Editor({ investorId, seed }: Props) {
       if (!db) return;
       try {
         const { doc, getDoc } = await import('firebase/firestore');
-        const snap = await getDoc(doc(db, 'theses', investorId));
+        const snap = await getDoc(doc(db, 'theses', thesisDocId));
         if (snap.exists()) {
           const data = snap.data() as Thesis;
           setThesis(data);
@@ -52,11 +52,11 @@ export default function Editor({ investorId, seed }: Props) {
         // ignore and keep local
       }
     })();
-  }, [investorId]);
+  }, [thesisDocId]);
 
   const save = () => {
     try {
-      localStorage.setItem(k(investorId), JSON.stringify(thesis));
+      localStorage.setItem(k(thesisDocId), JSON.stringify(thesis));
       setSavedAt(Date.now());
       setCloudStatus('Saved locally');
     } catch {
@@ -69,7 +69,7 @@ export default function Editor({ investorId, seed }: Props) {
         const db = await getDb();
         if (!db) return;
         const { doc, setDoc } = await import('firebase/firestore');
-        await setDoc(doc(db, 'theses', investorId), thesis, { merge: true });
+        await setDoc(doc(db, 'theses', thesisDocId), thesis, { merge: true });
         setCloudStatus('Saved to cloud');
       } catch {
         // rules might block; keep it silent
@@ -79,7 +79,7 @@ export default function Editor({ investorId, seed }: Props) {
 
   const reset = () => {
     setThesis(seed);
-    try { localStorage.removeItem(k(investorId)); } catch {}
+    try { localStorage.removeItem(k(thesisDocId)); } catch {}
   };
 
   const copyJSON = async () => {
