@@ -2,6 +2,7 @@
 import { getFirebaseWebConfig } from '@/lib/env';
 
 let _app: unknown | null = null;
+let _db: unknown | null = null;
 
 export async function getClientApp() {
   if (typeof window === 'undefined') return null;
@@ -13,10 +14,23 @@ export async function getClientApp() {
 }
 
 export async function getDb() {
+  if (typeof window === 'undefined') return null;
+  if (_db) return _db as unknown;
   const app = await getClientApp();
   if (!app) return null;
-  const { getFirestore } = await import('firebase/firestore');
-  return getFirestore();
+  try {
+    // In restrictive networks, long-polling is more reliable than streaming fetch.
+    const { initializeFirestore } = await import('firebase/firestore');
+    _db = initializeFirestore(app as any, {
+      experimentalForceLongPolling: true,
+      useFetchStreams: false,
+    });
+  } catch {
+    // If Firestore was already initialized elsewhere, just grab the default.
+    const { getFirestore } = await import('firebase/firestore');
+    _db = getFirestore();
+  }
+  return _db as unknown;
 }
 
 export async function getAuthClient() {
