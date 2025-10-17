@@ -4,7 +4,7 @@ import * as React from 'react';
 import AppShell from '@/components/app-shell';
 import { isFirebaseConfigured } from '@/lib/env';
 import { getDb } from '@/lib/firebase';
-import { SEED_WORKSPACES, SEED_THESES } from '@/lib/seeds';
+import { SEED_WORKSPACES, SEED_THESES, SEED_INVESTORS } from '@/lib/seeds';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,6 +45,14 @@ export default function SeedPage() {
           out.push({ id: `thesis:${th.id}`, ok: true, msg: 'upserted' });
         } catch (e: any) {
           out.push({ id: `thesis:${th.id}`, ok: false, msg: e?.message ?? 'error' });
+        }
+      }
+      for (const inv of SEED_INVESTORS) {
+        try {
+          await setDoc(doc(db, 'investors', inv.id), inv, { merge: true });
+          out.push({ id: `investor:${inv.id}`, ok: true, msg: 'upserted' });
+        } catch (e: any) {
+          out.push({ id: `investor:${inv.id}`, ok: false, msg: e?.message ?? 'error' });
         }
       }
       setResults(out);
@@ -88,10 +96,11 @@ export default function SeedPage() {
       </div>
       <hr style={{ margin: '16px 0', borderColor: 'rgba(255,255,255,0.12)' }} />
       <div style={{ opacity: 0.8, fontSize: 13, lineHeight: 1.6 }}>
-        <div><strong>Dev rules tip</strong> (temporary): allow authenticated users to write <code>workspaces</code> and <code>theses</code>.</div>
+        <div><strong>Dev rules tip</strong> (temporary): allow authenticated users to write <code>workspaces</code>, <code>theses</code>, and <code>investors</code>.</div>
         <pre style={{ whiteSpace: 'pre-wrap' }}>
 {`match /workspaces/{id} { allow read: if request.auth != null; allow write: if request.auth != null; }
-match /theses/{id}     { allow read: if request.auth != null; allow write: if request.auth != null; }`}
+match /theses/{id}     { allow read: if request.auth != null; allow write: if request.auth != null; }
+match /investors/{id}  { allow read: if request.auth != null; allow write: if request.auth != null; }`}
         </pre>
         <div>Deploy rules in the Firebase Console or CLI. Remove/lock down before prod.</div>
       </div>
