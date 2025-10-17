@@ -45,6 +45,12 @@ export default function DashboardPage() {
               Investors / Theses
             </a>
             <a
+              href="/admin/seed"
+              style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', textDecoration: 'none', color: '#e6eefc' }}
+            >
+              Admin (seed)
+            </a>
+            <a
               href="/programs"
               style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', textDecoration: 'none', color: '#e6eefc' }}
             >
