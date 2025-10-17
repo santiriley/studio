@@ -2,7 +2,7 @@
 'use client';
 import * as React from 'react';
 import AppShell from '@/components/app-shell';
-import { isFirebaseConfigured } from '@/lib/env';
+import { isFirebaseConfigured, getFirebaseWebConfig } from '@/lib/env';
 import { getDb } from '@/lib/firebase';
 import { SEED_WORKSPACES, SEED_THESES, SEED_INVESTORS } from '@/lib/seeds';
 
@@ -14,15 +14,17 @@ export default function SeedPage() {
   const [results, setResults] = React.useState<Result[]>([]);
   const [busy, setBusy] = React.useState(false);
   const [note, setNote] = React.useState<string>('');
+  const cfg = getFirebaseWebConfig();
+  const configured = isFirebaseConfigured();
 
   const seed = async () => {
     setBusy(true);
     setResults([]);
     setNote('');
     try {
-      if (!isFirebaseConfigured()) {
-        setNote('Firebase not configured. App Hosting will set FIREBASE_WEBAPP_CONFIG automatically; for local dev use NEXT_PUBLIC_* envs.');
-        return;
+      if (!configured) {
+        setNote('Firebase not configured. App Hosting sets FIREBASE_WEBAPP_CONFIG automatically; for local dev use NEXT_PUBLIC_* envs.');
+        return; // finally will run
       }
       const db = await getDb();
       if (!db) {
@@ -85,6 +87,10 @@ export default function SeedPage() {
         <a href="/investors" style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', textDecoration: 'none', color: '#e6eefc' }}>
           Go to Investors
         </a>
+      </div>
+      <div style={{ marginBottom: 6, fontSize: 12, opacity: 0.7 }}>
+        Firebase configured: <code>{configured ? 'yes' : 'no'}</code>
+        {cfg?.projectId ? <> · projectId: <code>{cfg.projectId}</code></> : null}
       </div>
       {note && <div style={{ marginBottom: 10, opacity: 0.9 }}>{note}</div>}
       <div style={{ display: 'grid', gap: 6 }}>
