@@ -1,7 +1,9 @@
+'use client';
 import AppShell from '@/components/app-shell';
 import { rankInvestors } from '@/lib/match';
 import { mockInvestors } from '@/lib/mock';
 import { MatchResult, StartupProfile, MatchReason } from '@/lib/types';
+import { useWorkspace } from '@/context/workspace';
 
 export const dynamic = 'force-dynamic';
 
@@ -53,8 +55,10 @@ function Chip({ verdict, text, title }: { verdict: 'match' | 'warning' | 'miss';
 }
 
 export default function MatchPage({ searchParams }: { searchParams?: SP }) {
+  const { current } = useWorkspace();
   const startup = fromSearchParams(searchParams ?? {});
-  const results: MatchResult[] = rankInvestors(startup, mockInvestors);
+  const list = mockInvestors.filter(inv => !inv.workspaceId || inv.workspaceId === current?.id);
+  const results: MatchResult[] = rankInvestors(startup, list);
 
   return (
     <AppShell>
