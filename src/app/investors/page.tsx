@@ -2,6 +2,7 @@
 import AppShell from '@/components/app-shell';
 import { useWorkspace } from '@/context/workspace';
 import { fetchInvestorsForWorkspace, getInvestorsLastSource } from '@/lib/data';
+import { mockInvestors } from '@/lib/mock';
 import * as React from 'react';
 export const dynamic = 'force-dynamic';
 
@@ -14,11 +15,21 @@ export default function InvestorsPage() {
     let alive = true;
     (async () => {
       setLoading(true);
-      const data = await fetchInvestorsForWorkspace(current?.id);
-      if (alive) {
-        setList(data);
-        setLoading(false);
-        setSource(getInvestorsLastSource());
+      try {
+        const data = await fetchInvestorsForWorkspace(current?.id);
+        if (alive) {
+          setList(data);
+          setSource(getInvestorsLastSource());
+        }
+      } catch {
+        // hard fallback to mocks
+        if (alive) {
+          const data = mockInvestors.filter(i => !current?.id || !i.workspaceId || i.workspaceId === current.id);
+          setList(data);
+          setSource('mock');
+        }
+      } finally {
+        if (alive) setLoading(false);
       }
     })();
     return () => { alive = false; };
