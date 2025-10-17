@@ -69,10 +69,17 @@ export type Cluster = {
 // --- Matching model ---
 export type MatchReasonCode = 'sector' | 'stage' | 'geo' | 'ticket';
 export type MatchVerdict = 'match' | 'warning' | 'miss';
+export type MatchReasonMeta = {
+  thesisField?: string;
+  thesisValue?: string | number | string[] | undefined;
+  startupField?: string;
+  startupValue?: string | number | undefined;
+};
 export type MatchReason = {
   code: MatchReasonCode;
   verdict: MatchVerdict; // 'match' ✓, 'warning' !, 'miss' ✗
-  label: string;         // human-readable explanation
+  label: string; // human-readable explanation
+  meta?: MatchReasonMeta; // optional: used for tooltips on UI
 };
 
 export type MatchResult = {
