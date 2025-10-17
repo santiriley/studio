@@ -1,6 +1,7 @@
 // Editable seeds for workspaces & theses (no hard-coding later; just a bootstrap).
 import { Thesis } from '@/lib/types';
 import { Workspace, ThesisDoc } from '@/lib/thesis-engine';
+import type { Investor } from '@/lib/types';
 
 export const SEED_WORKSPACES: Workspace[] = [
   { id: 'ws-atta', name: 'Atta Impact Capital', primaryColor: '#1b3a2f' },
@@ -40,4 +41,12 @@ export const SEED_THESES: ThesisDoc[] = [
     } as Thesis,
     updatedAt: Date.now(),
   },
+];
+
+// Investors are light metadata; thesis content lives in `theses/*`.
+export const SEED_INVESTORS: Array<
+  Pick<Investor, 'id' | 'name' | 'logoUrl' | 'workspaceId'> & { thesisDocId: string }
+> = [
+  { id: 'inv-atta',  name: 'Atta Impact Capital (MCF1)', logoUrl: '', workspaceId: 'ws-atta',  thesisDocId: 'ws-atta-thesis' },
+  { id: 'inv-carao', name: 'Carao Ventures',             logoUrl: '', workspaceId: 'ws-carao', thesisDocId: 'ws-carao-thesis' },
 ];
