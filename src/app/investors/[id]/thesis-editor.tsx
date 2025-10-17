@@ -9,8 +9,8 @@ type Props = {
   seed: Thesis;
 };
 
-// localStorage key
-const k = (id: string) => `thesis:${id}`;
+// localStorage key uses the thesis doc id so it mirrors Firestore.
+const k = (docId: string) => `thesis:${docId}`;
 
 function toCSV(arr?: string[]) { return (arr ?? []).join(', '); }
 function fromCSV(s: string) {
@@ -190,7 +190,7 @@ export default function Editor({ thesisDocId, seed }: Props) {
           <span>Exceptions (comma separated)</span>
           <input
             value={toCSV(thesis.exceptions)}
-            onChange={(e) => onChange('exceptions', fromCSV(e.target.value))}
+            onChange={(e) => onChange('exceptions', fromCSV(e.g.target.value))}
             style={inputStyle}
           />
         </label>
