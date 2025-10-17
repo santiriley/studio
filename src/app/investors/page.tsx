@@ -1,16 +1,31 @@
 'use client';
 import AppShell from '@/components/app-shell';
-import { mockInvestors } from '@/lib/mock';
 import { useWorkspace } from '@/context/workspace';
+import { fetchInvestorsForWorkspace } from '@/lib/data';
+import * as React from 'react';
 export const dynamic = 'force-dynamic';
 
 export default function InvestorsPage() {
   const { current } = useWorkspace();
-  const list = mockInvestors.filter(inv => !inv.workspaceId || inv.workspaceId === current?.id);
+  const [list, setList] = React.useState(() => [] as Awaited<ReturnType<typeof fetchInvestorsForWorkspace>>);
+  const [loading, setLoading] = React.useState(true);
+  React.useEffect(() => {
+    let alive = true;
+    (async () => {
+      setLoading(true);
+      const data = await fetchInvestorsForWorkspace(current?.id);
+      if (alive) {
+        setList(data);
+        setLoading(false);
+      }
+    })();
+    return () => { alive = false; };
+  }, [current?.id]);
   return (
     <AppShell>
       <h1 style={{ fontSize: 22, margin: '8px 0 16px' }}>Investors</h1>
       <div style={{ display: 'grid', gap: 12 }}>
+        {loading && <div style={{ opacity: 0.8 }}>Loading…</div>}
         {list.map((inv) => (
           <a
             key={inv.id}
