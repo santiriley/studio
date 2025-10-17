@@ -14,9 +14,18 @@ export type FirebaseWebConfig = {
  * Falls back to NEXT_PUBLIC_* envs for local dev.
  */
 export function getFirebaseWebConfig(): FirebaseWebConfig | null {
-  // App Hosting injects this at build time (availability: BUILD)
+  // Prefer the value we surfaced to the client from next.config.ts
+  const rawPublic = process.env.NEXT_PUBLIC_FIREBASE_WEBAPP_CONFIG;
+  if (rawPublic && rawPublic.trim() !== '') {
+    try {
+      return JSON.parse(rawPublic) as FirebaseWebConfig;
+    } catch {
+      /* fall through */
+    }
+  }
+  // Server-side (or if someone imports this in a server file)
   const raw = process.env.FIREBASE_WEBAPP_CONFIG;
-  if (raw && raw.trim() !== '') {
+  if (raw && raw.trim() !== "") {
     try {
       return JSON.parse(raw) as FirebaseWebConfig;
     } catch {
