@@ -32,6 +32,7 @@ export function evaluateVCForStartup(
     code: 'geo',
     verdict: geoOk,
     label: geoOk === 'match' ? `Geo ✓ (${country ?? 'unspecified'})` : `Geo ✗ (${country} not in thesis)`,
+    meta: { thesisField: 'geos', thesisValue: thesis.geos, startupField: 'country', startupValue: country },
   });
   if (geoOk === 'match') score += 25 * weights.geo;
 
@@ -44,6 +45,7 @@ export function evaluateVCForStartup(
     code: 'sector',
     verdict: sectorOk,
     label: sectorOk === 'match' ? `Sector ✓ (${startup.sector ?? 'unspecified'})` : `Sector ✗ (${startup.sector} not in thesis)`,
+    meta: { thesisField: 'sectors', thesisValue: thesis.sectors, startupField: 'sector', startupValue: startup.sector },
   });
   if (sectorOk === 'match') score += 30 * weights.sector;
 
@@ -56,6 +58,7 @@ export function evaluateVCForStartup(
     code: 'stage',
     verdict: stageOk,
     label: stageOk === 'match' ? `Stage ✓ (${startup.stage ?? 'unspecified'})` : `Stage ✗ (${startup.stage} not in thesis)`,
+    meta: { thesisField: 'stages', thesisValue: thesis.stages, startupField: 'stage', startupValue: startup.stage },
   });
   if (stageOk === 'match') score += 25 * weights.stage;
 
@@ -73,6 +76,12 @@ export function evaluateVCForStartup(
         : ticketVerdict === 'warning'
         ? `Ticket ! (outside preference or unspecified)`
         : `Ticket ✗ (mismatch)`,
+    meta: {
+      thesisField: 'checkSize',
+      thesisValue: { min: thesis.checkSize?.min, max: thesis.checkSize?.max, currency: thesis.checkSize?.currency },
+      startupField: 'desiredCheckSize',
+      startupValue: startup.desiredCheckSize,
+    },
   });
   if (ticketVerdict === 'match') score += 20 * weights.check;
   else if (ticketVerdict === 'warning') score += 10 * weights.check * 0.5; // soft points
