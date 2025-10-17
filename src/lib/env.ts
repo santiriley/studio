@@ -1,4 +1,4 @@
-export type FirebaseWeb-Config = {
+export type FirebaseWebConfig = {
   apiKey: string;
   authDomain: string;
   projectId: string;
@@ -8,18 +8,25 @@ export type FirebaseWeb-Config = {
   databaseURL?: string;
 };
 
-// Prefer the App Hosting-provided FIREBASE_WEBAPP_CONFIG; fall back to NEXT_PUBLIC_*.
+/**
+ * Returns Firebase web config if available.
+ * Prefers App Hosting's FIREBASE_WEBAPP_CONFIG JSON.
+ * Falls back to NEXT_PUBLIC_* envs for local dev.
+ */
 export function getFirebaseWebConfig(): FirebaseWebConfig | null {
+  // App Hosting injects this at build time (availability: BUILD)
   const raw = process.env.FIREBASE_WEBAPP_CONFIG;
-  if (raw) {
+  if (raw && raw.trim() !== '') {
     try {
       return JSON.parse(raw) as FirebaseWebConfig;
     } catch {
-      /* ignore */
+      // ignore and fall through to NEXT_PUBLIC_* fallback
     }
   }
+
   const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
   if (!apiKey) return null;
+
   return {
     apiKey,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || '',
@@ -31,4 +38,4 @@ export function getFirebaseWebConfig(): FirebaseWebConfig | null {
   };
 }
 
-export const isFirebaseConfigured = () => !!getFirebaseWebConfig();
+export const isFirebaseConfigured = (): boolean => getFirebaseWebConfig() !== null;
