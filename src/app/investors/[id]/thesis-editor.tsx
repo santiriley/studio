@@ -1,6 +1,8 @@
 'use client';
 import * as React from 'react';
 import type { Thesis } from '@/lib/types';
+import { getDb } from '@/lib/firebase';
+import { isFirebaseConfigured } from '@/lib/env';
 
 type Props = {
   investorId: string;
@@ -18,6 +20,7 @@ function fromCSV(s: string) {
 export default function Editor({ investorId, seed }: Props) {
   const [thesis, setThesis] = React.useState<Thesis>(seed);
   const [savedAt, setSavedAt] = React.useState<number | null>(null);
+  const [cloudStatus, setCloudStatus] = React.useState<string>(''); // UI hint
 
   // Load from localStorage if present
   React.useEffect(() => {
@@ -31,14 +34,47 @@ export default function Editor({ investorId, seed }: Props) {
     } catch {}
   }, [investorId]);
 
+  // Try to load from Firestore if configured (read-only safe)
+  React.useEffect(() => {
+    (async () => {
+      if (!isFirebaseConfigured()) return;
+      const db = await getDb();
+      if (!db) return;
+      try {
+        const { doc, getDoc } = await import('firebase/firestore');
+        const snap = await getDoc(doc(db, 'theses', investorId));
+        if (snap.exists()) {
+          const data = snap.data() as Thesis;
+          setThesis(data);
+          setCloudStatus('Loaded from cloud');
+        }
+      } catch (e) {
+        // ignore and keep local
+      }
+    })();
+  }, [investorId]);
+
   const save = () => {
     try {
       localStorage.setItem(k(investorId), JSON.stringify(thesis));
       setSavedAt(Date.now());
-      alert('Saved locally (browser only). We will wire Firestore later.');
+      setCloudStatus('Saved locally');
     } catch {
-      alert('Unable to save locally.');
+      setCloudStatus('Unable to save locally');
     }
+    // Best-effort cloud write
+    void (async () => {
+      try {
+        if (!isFirebaseConfigured()) return;
+        const db = await getDb();
+        if (!db) return;
+        const { doc, setDoc } = await import('firebase/firestore');
+        await setDoc(doc(db, 'theses', investorId), thesis, { merge: true });
+        setCloudStatus('Saved to cloud');
+      } catch {
+        // rules might block; keep it silent
+      }
+    })();
   };
 
   const reset = () => {
@@ -81,7 +117,8 @@ export default function Editor({ investorId, seed }: Props) {
   return (
     <div style={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)' }}>
       <p style={{ marginTop: 0, opacity: 0.85 }}>
-        <strong>Note:</strong> Edits save to <em>your browser</em> only (localStorage). We’ll connect Firestore next.
+        <strong>Note:</strong> Saves to your browser; if Firebase is configured and rules allow, also saves to Firestore.
+        {cloudStatus ? <span style={{ marginLeft: 8, opacity: 0.9 }}>· {cloudStatus}</span> : null}
       </p>
       <div style={{ display: 'grid', gap: 12, maxWidth: 800 }}>
         <label style={{ display: 'grid', gap: 6 }}>
