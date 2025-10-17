@@ -1,14 +1,17 @@
-
+'use client';
 import AppShell from '@/components/app-shell';
 import { mockInvestors } from '@/lib/mock';
+import { useWorkspace } from '@/context/workspace';
 export const dynamic = 'force-dynamic';
 
 export default function InvestorsPage() {
+  const { current } = useWorkspace();
+  const list = mockInvestors.filter(inv => !inv.workspaceId || inv.workspaceId === current?.id);
   return (
     <AppShell>
       <h1 style={{ fontSize: 22, margin: '8px 0 16px' }}>Investors</h1>
       <div style={{ display: 'grid', gap: 12 }}>
-        {mockInvestors.map((inv) => (
+        {list.map((inv) => (
           <a
             key={inv.id}
             href={`/investors/${inv.id}`}
