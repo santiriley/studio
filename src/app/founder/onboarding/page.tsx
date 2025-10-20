@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import AppShell from '@/components/app-shell';
+import { saveStartupProfile, currentUserId } from '@/lib/startups';
+
 export const dynamic = 'force-dynamic';
 
 const SECTORS = ['Climate', 'Circular Economy', 'AgTech', 'Waste-to-Value', 'Fintech', 'SaaS', 'Marketplaces'] as const;
@@ -19,23 +21,37 @@ export default function FounderOnboardingPage() {
     website: '',
     deckUrl: '',
   });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: name === 'desiredCheckSize' ? Number(value) : value }));
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const params = new URLSearchParams();
-    if (form.name) params.set('name', form.name);
-    if (form.country) params.set('country', form.country);
-    if (form.sector) params.set('sector', form.sector);
-    if (form.stage) params.set('stage', form.stage);
-    if (form.desiredCheckSize) params.set('desiredCheckSize', String(form.desiredCheckSize));
-    if (form.website) params.set('website', form.website);
-    if (form.deckUrl) params.set('deckUrl', form.deckUrl);
-    router.push(`/match?${params.toString()}`);
+    setSaving(true);
+    setError(null);
+    try {
+      const uid = await currentUserId();
+      const docId = await saveStartupProfile({
+        ownerId: uid,
+        name: form.name,
+        country: form.country,
+        sector: form.sector,
+        stage: form.stage,
+        desiredCheckSize: form.desiredCheckSize,
+        website: form.website,
+        deckUrl: form.deckUrl,
+        createdAt: Date.now(),
+      });
+      router.push(`/match?id=${encodeURIComponent(docId)}`);
+    } catch (err: any) {
+      setError(err?.message ?? 'Failed to save. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -126,13 +142,15 @@ export default function FounderOnboardingPage() {
             style={{ padding: 8, borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', background: 'transparent', color: '#e6eefc' }}
           />
         </label>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }}>
           <button
             type="submit"
-            style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', background: 'transparent', color: '#e6eefc' }}
+            disabled={saving}
+            style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', background: 'transparent', color: '#e6eefc', cursor: 'pointer' }}
           >
-            Find matches
+            {saving ? 'Saving…' : 'Save & find matches'}
           </button>
+          {error && <div style={{ color: '#fca5a5', fontSize: 13 }}>{error}</div>}
         </div>
       </form>
     </AppShell>
