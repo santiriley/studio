@@ -17,13 +17,17 @@ export type Investor = { id: string; name: string; thesis: Thesis; logoUrl?: str
 
 export type StartupProfile = {
   id: string;
-  name: string;
+  ownerId?: string;
+  name?: string;
   country?: string;
   sector?: string;
   stage?: string;
   desiredCheckSize?: number;
-  links?: { website?: string; deckUrl?: string };
+  website?: string;
+  deckUrl?: string;
+  createdAt?: number;      // client timestamp fallback
 };
+
 
 // --- Pipeline/Kanban (mock default) ---
 // TODO: Replace with workspace-configurable stages when wiring Firestore.
