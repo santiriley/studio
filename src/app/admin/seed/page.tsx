@@ -106,7 +106,8 @@ export default function SeedPage() {
         <pre style={{ whiteSpace: 'pre-wrap' }}>
 {`match /workspaces/{id} { allow read: if request.auth != null; allow write: if request.auth != null; }
 match /theses/{id}     { allow read: if request.auth != null; allow write: if request.auth != null; }
-match /investors/{id}  { allow read: if request.auth != null; allow write: if request.auth != null; }`}
+match /investors/{id}  { allow read: if request.auth != null; allow write: if request.auth != null; }
+match /startupProfiles/{id} { allow read, write: if request.auth != null; }`}
         </pre>
         <div>Deploy rules in the Firebase Console or CLI. Remove/lock down before prod.</div>
       </div>
