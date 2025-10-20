@@ -1,3 +1,4 @@
+
 import { Investor, MatchReason, MatchResult, StartupProfile, Thesis } from '@/lib/types';
 
 function inRange(n: number, min?: number, max?: number): 'match' | 'warning' | 'miss' {
@@ -78,7 +79,7 @@ export function evaluateVCForStartup(
         : `Ticket (mismatch)`,
     meta: {
       thesisField: 'checkSize',
-      thesisValue: { min: thesis.checkSize?.min, max: thesis.checkSize?.max, currency: thesis.checkSize?.currency },
+      thesisValue: thesis.checkSize,
       startupField: 'desiredCheckSize',
       startupValue: startup.desiredCheckSize,
     },
@@ -95,6 +96,7 @@ export function rankInvestors(
   startup: StartupProfile,
   investors: Investor[]
 ): MatchResult[] {
+  if (!startup?.name) return [];
   const results = investors.map((inv) => {
     const { score, reasons } = evaluateVCForStartup(startup, inv.thesis);
     return {

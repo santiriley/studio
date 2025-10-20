@@ -1,3 +1,4 @@
+
 'use client';
 import AppShell from '@/components/app-shell';
 import { rankInvestors } from '@/lib/match';
@@ -6,10 +7,11 @@ import { useWorkspace } from '@/context/workspace';
 import { fetchInvestorsForWorkspace, getInvestorsLastSource } from '@/lib/data';
 import { mockInvestors } from '@/lib/mock';
 import * as React from 'react';
+import { loadStartupProfile } from '@/lib/startups';
 
 export const dynamic = 'force-dynamic';
 
-type SP = { [key: string]: string | string[] | undefined };
+type SP = { [k: string]: string | string[] | undefined };
 
 function fromSearchParams(searchParams: SP): StartupProfile {
   const get = (k: string) => {
@@ -18,13 +20,14 @@ function fromSearchParams(searchParams: SP): StartupProfile {
   };
   const desired = get('desiredCheckSize');
   return {
-    id: 'sp-temp', // TODO: replace with Firestore id when wired
-    name: get('name') || 'Unnamed Startup',
+    id: 'ad-hoc',
+    name: get('name'),
     country: get('country'),
     sector: get('sector'),
     stage: get('stage'),
     desiredCheckSize: desired ? Number(desired) : undefined,
-    links: { website: get('website'), deckUrl: get('deckUrl') },
+    website: get('website'),
+    deckUrl: get('deckUrl'),
   };
 }
 
@@ -58,10 +61,27 @@ function Chip({ verdict, text, title }: { verdict: 'match' | 'warning' | 'miss';
 
 export default function MatchPage({ searchParams }: { searchParams?: SP }) {
   const { current } = useWorkspace();
-  const startup = fromSearchParams(searchParams ?? {});
+  const [startup, setStartup] = React.useState<StartupProfile>(fromSearchParams(searchParams ?? {}));
   const [results, setResults] = React.useState<MatchResult[]>([]);
   const [source, setSource] = React.useState<'firestore' | 'mock'>('mock');
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  // If ?id= is present, load the saved profile
+  React.useEffect(() => {
+    const id = typeof searchParams?.id === 'string' ? searchParams!.id : Array.isArray(searchParams?.id) ? searchParams!.id[0] : undefined;
+    let alive = true;
+    (async () => {
+      if (id) {
+        const data = await loadStartupProfile(id);
+        if (alive && data) setStartup(data);
+      }
+      setLoading(false);
+    })();
+    return () => { alive = false; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams?.id]);
+
+
   React.useEffect(() => {
     let alive = true;
     (async () => {
@@ -86,7 +106,7 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
       }
     })();
     return () => { alive = false; };
-  }, [current?.id, startup.country, startup.sector, startup.stage, startup.desiredCheckSize]);
+  }, [current?.id, startup.country, startup.sector, startup.stage, startup.desiredCheckSize, startup.id]);
 
   return (
     <AppShell>
@@ -97,7 +117,10 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
           <div><strong>Country:</strong> {startup.country ?? '—'} · <strong>Sector:</strong> {startup.sector ?? '—'} · <strong>Stage:</strong> {startup.stage ?? '—'} · <strong>Ticket:</strong> {startup.desiredCheckSize ?? '—'}</div>
         </div>
       </section>
-      <div style={{ fontSize: 12, opacity: 0.7, margin: '4px 0 12px' }}>Data source: <code>{source}</code></div>
+      <div style={{ fontSize: 12, opacity: 0.7, margin: '4px 0 12px' }}>
+        Data source: <code>{source}</code>
+        {startup?.id && startup.id !== 'ad-hoc' && <> · Startup ID: <strong>{startup.id}</strong></>}
+      </div>
       {loading && <div style={{ opacity: 0.8, marginBottom: 12 }}>Loading…</div>}
       <div style={{ display: 'grid', gap: 12 }}>
         {results.map((r) => (
