@@ -1,3 +1,4 @@
+
 'use client';
 import * as React from 'react';
 import AppShell from '@/components/app-shell';
@@ -84,6 +85,7 @@ export default function FirebaseDebugPage() {
 {`match /workspaces/{id} { allow read, write: if request.auth != null; }
 match /theses/{id}     { allow read, write: if request.auth != null; }
 match /investors/{id}  { allow read, write: if request.auth != null; }
+match /startupProfiles/{id} { allow read, write: if request.auth != null; }
 match /debug/{id}      { allow read, write: if request.auth != null; }`}
         </pre>
       </div>
