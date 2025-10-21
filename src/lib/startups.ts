@@ -1,4 +1,3 @@
-
 import { isFirebaseConfigured } from '@/lib/env';
 import { getDb, getAuthClient } from '@/lib/firebase';
 import type { StartupProfile } from '@/lib/types';
@@ -7,7 +6,6 @@ const LS_KEY = (id: string) => `vs:startupProfile:${id}`;
 const LAST_ID_KEY = 'vs:lastStartupProfileId';
 
 export async function saveStartupProfile(input: Omit<StartupProfile, 'id'>): Promise<string> {
-  // Prefer cloud
   try {
     if (isFirebaseConfigured()) {
       const db = await getDb();
@@ -17,15 +15,12 @@ export async function saveStartupProfile(input: Omit<StartupProfile, 'id'>): Pro
           ...input,
           createdAt: serverTimestamp(),
         });
-        // cache locally as well
         try { localStorage.setItem(LS_KEY(docRef.id), JSON.stringify({ id: docRef.id, ...input })); } catch {}
         try { localStorage.setItem(LAST_ID_KEY, docRef.id); } catch {}
         return docRef.id;
       }
     }
-  } catch { /* ignore and fall through */ }
-
-  // Local-only save
+  } catch {}
   const localId = `local_${Date.now()}`;
   const record: StartupProfile = { id: localId, ...input, createdAt: Date.now() };
   try {
@@ -36,7 +31,6 @@ export async function saveStartupProfile(input: Omit<StartupProfile, 'id'>): Pro
 }
 
 export async function loadStartupProfile(id: string): Promise<StartupProfile | null> {
-  // Try cloud first
   try {
     if (isFirebaseConfigured()) {
       const db = await getDb();
@@ -51,9 +45,7 @@ export async function loadStartupProfile(id: string): Promise<StartupProfile | n
         }
       }
     }
-  } catch { /* ignore */ }
-
-  // Fallback local
+  } catch {}
   try {
     const raw = localStorage.getItem(LS_KEY(id));
     if (raw) return JSON.parse(raw) as StartupProfile;
@@ -65,8 +57,7 @@ export async function currentUserId(): Promise<string | undefined> {
   try {
     const ac = await getAuthClient();
     if (!ac) return undefined;
-    const { auth } = ac;
-    return auth.currentUser?.uid ?? undefined;
+    return ac.auth.currentUser?.uid ?? undefined;
   } catch { return undefined; }
 }
 
