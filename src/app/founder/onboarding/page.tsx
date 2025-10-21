@@ -46,7 +46,7 @@ export default function FounderOnboardingPage() {
         deckUrl: form.deckUrl,
         createdAt: Date.now(),
       });
-      router.push(`/match?id=${encodeURIComponent(docId)}`);
+      window.location.href = `/match?id=${encodeURIComponent(docId)}`;
     } catch (err: any) {
       setError(err?.message ?? 'Failed to save. Please try again.');
     } finally {
