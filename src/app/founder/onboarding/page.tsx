@@ -1,7 +1,5 @@
-
 'use client';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import * as React from 'react';
 import AppShell from '@/components/app-shell';
 import { saveStartupProfile, currentUserId } from '@/lib/startups';
 
@@ -11,8 +9,7 @@ const SECTORS = ['Climate', 'Circular Economy', 'AgTech', 'Waste-to-Value', 'Fin
 const STAGES = ['Pre-Seed', 'Seed', 'Pre-Series A'] as const;
 
 export default function FounderOnboardingPage() {
-  const router = useRouter();
-  const [form, setForm] = useState({
+  const [form, setForm] = React.useState({
     name: '',
     country: 'Costa Rica',
     sector: 'Climate',
@@ -21,8 +18,8 @@ export default function FounderOnboardingPage() {
     website: '',
     deckUrl: '',
   });
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -35,7 +32,7 @@ export default function FounderOnboardingPage() {
     setError(null);
     try {
       const uid = await currentUserId();
-      const docId = await saveStartupProfile({
+      const id = await saveStartupProfile({
         ownerId: uid,
         name: form.name,
         country: form.country,
@@ -46,9 +43,9 @@ export default function FounderOnboardingPage() {
         deckUrl: form.deckUrl,
         createdAt: Date.now(),
       });
-      window.location.href = `/match?id=${encodeURIComponent(docId)}`;
+      window.location.href = `/match?id=${encodeURIComponent(id)}`;
     } catch (err: any) {
-      setError(err?.message ?? 'Failed to save. Please try again.');
+      setError(err?.message ?? 'Failed to save profile');
     } finally {
       setSaving(false);
     }
@@ -143,14 +140,11 @@ export default function FounderOnboardingPage() {
           />
         </label>
         <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }}>
-          <button
-            type="submit"
-            disabled={saving}
-            style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.12)', background: 'transparent', color: '#e6eefc', cursor: 'pointer' }}
-          >
-            {saving ? 'Saving…' : 'Save & find matches'}
-          </button>
-          {error && <div style={{ color: '#fca5a5', fontSize: 13 }}>{error}</div>}
+        <button type="submit" disabled={saving}
+          style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.16)', background: 'transparent', color: '#e6eefc', cursor: 'pointer' }}>
+          {saving ? 'Saving…' : 'Save & find matches'}
+        </button>
+        {error && <div style={{ color: '#fca5a5', fontSize: 13 }}>{error}</div>}
         </div>
       </form>
     </AppShell>
