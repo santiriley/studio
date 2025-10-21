@@ -65,6 +65,7 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
   const [results, setResults] = React.useState<MatchResult[]>([]);
   const [source, setSource] = React.useState<'firestore' | 'mock'>('mock');
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [copied, setCopied] = React.useState(false);
 
   // If ?id= is present, load the saved profile
   React.useEffect(() => {
@@ -117,9 +118,13 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
           <div><strong>Country:</strong> {startup.country ?? '—'} · <strong>Sector:</strong> {startup.sector ?? '—'} · <strong>Stage:</strong> {startup.stage ?? '—'} · <strong>Ticket:</strong> {startup.desiredCheckSize ?? '—'}</div>
         </div>
       </section>
-      <div style={{ fontSize: 12, opacity: 0.7, margin: '4px 0 12px' }}>
-        Data source: <code>{source}</code>
-        {startup?.id && startup.id !== 'ad-hoc' && <> · Startup ID: <strong>{startup.id}</strong></>}
+      <div style={{ display:'flex', alignItems:'center', gap:8, fontSize: 12, opacity: 0.8, margin: '4px 0 12px' }}>
+        <span>Data source: <code>{source}</code></span>
+        {startup?.id && startup.id !== 'ad-hoc' && <span>· Startup ID: <strong>{startup.id}</strong></span>}
+        <button onClick={() => { navigator.clipboard.writeText(window.location.href).then(()=>{ setCopied(true); setTimeout(()=>setCopied(false),1200); }); }}
+          style={{ padding:'4px 8px', borderRadius:8, border:'1px solid rgba(255,255,255,0.16)', background:'transparent', color:'#e6eefc', cursor:'pointer' }}>
+          {copied ? 'Link copied!' : 'Copy share link'}
+        </button>
       </div>
       {loading && <div style={{ opacity: 0.8, marginBottom: 12 }}>Loading…</div>}
       <div style={{ display: 'grid', gap: 12 }}>
