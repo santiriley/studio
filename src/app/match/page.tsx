@@ -72,6 +72,7 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
     const id = typeof searchParams?.id === 'string' ? searchParams!.id : Array.isArray(searchParams?.id) ? searchParams!.id[0] : undefined;
     let alive = true;
     (async () => {
+      setLoading(true);
       if (id) {
         const data = await loadStartupProfile(id);
         if (alive && data) setStartup(data);
@@ -107,7 +108,7 @@ export default function MatchPage({ searchParams }: { searchParams?: SP }) {
       }
     })();
     return () => { alive = false; };
-  }, [current?.id, startup.country, startup.sector, startup.stage, startup.desiredCheckSize, startup.id]);
+  }, [current?.id, startup.id, startup.country, startup.sector, startup.stage, startup.desiredCheckSize]);
 
   return (
     <AppShell>
