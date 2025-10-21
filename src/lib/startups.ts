@@ -11,16 +11,15 @@ export async function saveStartupProfile(input: Omit<StartupProfile, 'id'>): Pro
       const db = await getDb();
       if (db) {
         const { addDoc, collection, serverTimestamp } = await import('firebase/firestore');
-        const docRef = await addDoc(collection(db as any, 'startupProfiles'), {
-          ...input,
-          createdAt: serverTimestamp(),
-        });
-        try { localStorage.setItem(LS_KEY(docRef.id), JSON.stringify({ id: docRef.id, ...input })); } catch {}
-        try { localStorage.setItem(LAST_ID_KEY, docRef.id); } catch {}
-        return docRef.id;
+        const ref = await addDoc(collection(db as any, 'startupProfiles'), { ...input, createdAt: serverTimestamp() });
+        // cache locally too
+        try { localStorage.setItem(LS_KEY(ref.id), JSON.stringify({ id: ref.id, ...input })); } catch {}
+        try { localStorage.setItem(LAST_ID_KEY, ref.id); } catch {}
+        return ref.id;
       }
     }
-  } catch {}
+  } catch { /* fall through to local */ }
+
   const localId = `local_${Date.now()}`;
   const record: StartupProfile = { id: localId, ...input, createdAt: Date.now() };
   try {
@@ -39,9 +38,9 @@ export async function loadStartupProfile(id: string): Promise<StartupProfile | n
         const snap = await getDoc(doc(db as any, 'startupProfiles', id));
         if (snap.exists()) {
           const data = snap.data() as StartupProfile;
-          const record = { id, ...data };
-          try { localStorage.setItem(LS_KEY(id), JSON.stringify(record)); } catch {}
-          return record;
+          const rec = { id, ...data };
+          try { localStorage.setItem(LS_KEY(id), JSON.stringify(rec)); } catch {}
+          return rec;
         }
       }
     }
@@ -56,8 +55,7 @@ export async function loadStartupProfile(id: string): Promise<StartupProfile | n
 export async function currentUserId(): Promise<string | undefined> {
   try {
     const ac = await getAuthClient();
-    if (!ac) return undefined;
-    return ac.auth.currentUser?.uid ?? undefined;
+    return ac ? ac.auth.currentUser?.uid ?? undefined : undefined;
   } catch { return undefined; }
 }
 
